@@ -146,3 +146,19 @@ pub async fn undo_migration(
     Ok(())
 }
 
+#[derive(Debug, Clone, Deserialize, Row)]
+pub struct MigrationOnClickhouse {
+    pub version: String,
+    pub name: String,
+}
+
+pub async fn get_last_migration_from_clickhouse(
+    client: clickhouse::Client,
+) -> Result<Option<MigrationOnClickhouse>, CLIError> {
+    let mut rows = client
+        .query("SELECT version, name FROM ch_migrations ORDER BY version DESC LIMIT 1")
+        .fetch_all::<MigrationOnClickhouse>()
+        .await?;
+
+    Ok(rows.pop())
+}
