@@ -120,12 +120,11 @@ pub async fn undo_migration(
     migration: MigrationOnDisk,
 ) -> Result<(), CLIError> {
     let down_query = migration.get_down_query().await?;
-    let mut queries = down_query
+    let queries = down_query
         .split(';')
+        .map(|s| s.trim())
         .filter(|s| !s.is_empty())
-        .collect::<Vec<&str>>();
-
-    queries.truncate(queries.len().saturating_sub(1));
+        .collect::<Vec<_>>();
 
     println!("Reverting migration {}", migration.name);
 
