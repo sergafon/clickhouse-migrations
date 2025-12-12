@@ -156,7 +156,7 @@ pub async fn get_last_migration_from_clickhouse(
     client: clickhouse::Client,
 ) -> Result<Option<MigrationOnClickhouse>, CLIError> {
     let mut rows = client
-        .query("SELECT version, name FROM ch_migrations ORDER BY version DESC LIMIT 1")
+        .query("SELECT version FROM ch_migrations ORDER BY version DESC LIMIT 1")
         .fetch_all::<MigrationOnClickhouse>()
         .await?;
 
