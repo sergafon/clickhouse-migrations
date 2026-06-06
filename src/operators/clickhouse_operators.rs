@@ -2,7 +2,7 @@ use chrono::Utc;
 use clickhouse::{Client, Row};
 use serde::{Deserialize, Serialize};
 
-use crate::{errors::CLIError, tools::migrations::SetupArgs};
+use crate::errors::CLIError;
 
 use super::migrations_operators::MigrationOnDisk;
 
@@ -43,22 +43,20 @@ pub async fn check_if_migrations_table_exists(
     Ok(!table_exists.is_empty())
 }
 
-pub async fn get_clickhouse_client_and_ping(args: SetupArgs) -> Result<Client, CLIError> {
-    let mut client = Client::default().with_url(
-        args.url
-            .ok_or(CLIError::BadArgs("Missing URL".to_string()))?,
-    );
+pub async fn get_clickhouse_client_and_ping() -> Result<Client, CLIError> {
+    let url = std::env::var("CLICKHOUSE_URL")
+        .map_err(|_| CLIError::BadArgs("Missing CLICKHOUSE_URL env var".to_string()))?;
+    let database = std::env::var("CLICKHOUSE_DB")
+        .map_err(|_| CLIError::BadArgs("Missing CLICKHOUSE_DB env var".to_string()))?;
 
-    if let Some(user) = args.user {
+    let mut client = Client::default().with_url(url).with_database(database);
+
+    if let Ok(user) = std::env::var("CLICKHOUSE_USER") {
         client = client.with_user(user);
     }
 
-    if let Some(password) = args.password {
+    if let Ok(password) = std::env::var("CLICKHOUSE_PASSWORD") {
         client = client.with_password(password);
-    }
-
-    if let Some(database) = args.database {
-        client = client.with_database(database);
     }
 
     client.query("SELECT 1").execute().await?;

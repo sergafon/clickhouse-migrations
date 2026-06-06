@@ -1,7 +1,7 @@
 use clap::Parser;
 use commands::{
-    generate::generate_command, redo::redo_command, revert::revert_commmand, run::run_command,
-    setup::setup_command, Cli, Commands, MigrationCommands,
+    generate::generate_command, redo::redo_command, revert::revert_commmand, run::run_command, Cli,
+    Commands, MigrationCommands,
 };
 use errors::CLIError;
 mod commands;
@@ -21,7 +21,6 @@ async fn main() {
     let args = Cli::parse();
 
     let res: Result<(), CLIError> = match args.command {
-        Commands::Setup(args) => setup_command(args).await,
         Commands::Migration(commands) => match commands {
             MigrationCommands::Generate(args) => generate_command(args).await,
             MigrationCommands::Run => run_command().await,

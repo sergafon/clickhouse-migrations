@@ -52,13 +52,6 @@ pub async fn get_migrations_from_dir() -> Result<Vec<MigrationOnDisk>, CLIError>
     let mut migrations = Vec::new();
 
     while let Some(entry) = reader.next_entry().await? {
-        if entry
-            .file_name()
-            .to_str()
-            .is_some_and(|s| s.starts_with("chm.toml"))
-        {
-            continue;
-        }
         migrations.push(MigrationOnDisk::from_str(entry.path()).await?)
     }
 

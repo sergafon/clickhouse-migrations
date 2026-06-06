@@ -1,12 +1,9 @@
 use clap::{Args, Parser, Subcommand};
 
-use crate::tools::migrations::SetupArgs;
-
 pub mod generate;
 pub mod redo;
 pub mod revert;
 pub mod run;
-pub mod setup;
 
 #[derive(Parser)]
 #[command(author, version)]
@@ -18,9 +15,6 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Creates a folder to contain migrations and a .toml file with connection details, will error
-    /// if migrations folder already exists.
-    Setup(SetupArgs),
     /// Commands to mutate migrations
     #[command(subcommand)]
     Migration(MigrationCommands),

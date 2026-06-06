@@ -1,12 +1,7 @@
-use crate::{
-    errors::CLIError,
-    tools::migrations::{run_pending_migrations, SetupArgs},
-};
+use crate::{errors::CLIError, tools::migrations::run_pending_migrations};
 
 pub async fn run_command() -> Result<(), CLIError> {
-    let config = SetupArgs::from_toml_file().await?;
-
-    run_pending_migrations(config).await?;
+    run_pending_migrations().await?;
 
     Ok(())
 }
