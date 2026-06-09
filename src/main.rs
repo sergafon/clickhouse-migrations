@@ -20,12 +20,14 @@ async fn main() {
 
     let args = Cli::parse();
 
+    let source = args.source;
+
     let res: Result<(), CLIError> = match args.command {
         Commands::Migration(commands) => match commands {
-            MigrationCommands::Generate(args) => generate_command(args).await,
-            MigrationCommands::Run => run_command().await,
-            MigrationCommands::Redo => redo_command().await,
-            MigrationCommands::Revert => revert_commmand().await,
+            MigrationCommands::Generate(gen_args) => generate_command(gen_args, &source).await,
+            MigrationCommands::Run => run_command(&source).await,
+            MigrationCommands::Redo => redo_command(&source).await,
+            MigrationCommands::Revert => revert_commmand(&source).await,
         },
     };
 

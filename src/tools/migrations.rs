@@ -8,13 +8,14 @@ use crate::{
         migrations_operators::{get_migrations_from_dir, MigrationOnDisk},
     },
 };
+use std::path::Path;
 
-pub async fn run_pending_migrations() -> Result<(), CLIError> {
+pub async fn run_pending_migrations(source: &Path) -> Result<(), CLIError> {
     let client = get_clickhouse_client_and_ping().await?;
 
     create_migrations_table(client.clone()).await?;
 
-    let local_migrations = get_migrations_from_dir().await?;
+    let local_migrations = get_migrations_from_dir(source).await?;
 
     let applied_migrations = get_migrations_from_clickhouse(client.clone()).await?;
 

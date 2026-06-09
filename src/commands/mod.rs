@@ -1,4 +1,5 @@
 use clap::{Args, Parser, Subcommand};
+use std::path::PathBuf;
 
 pub mod generate;
 pub mod redo;
@@ -11,6 +12,9 @@ pub mod run;
 pub struct Cli {
     #[command(subcommand)]
     pub command: Commands,
+
+    #[arg(long, short = 's', global = true, default_value = "ch_migrations", help = "Directory containing migrations")]
+    pub source: PathBuf,
 }
 
 #[derive(Subcommand)]

@@ -8,8 +8,9 @@ use crate::{
         migrations_operators::get_migrations_from_dir,
     },
 };
+use std::path::Path;
 
-pub async fn revert_commmand() -> Result<(), CLIError> {
+pub async fn revert_commmand(source: &Path) -> Result<(), CLIError> {
     let client = get_clickhouse_client_and_ping().await?;
 
     if !(check_if_migrations_table_exists(client.clone()).await?) {
@@ -20,7 +21,7 @@ pub async fn revert_commmand() -> Result<(), CLIError> {
         .await?
         .ok_or_else(|| CLIError::InternalError("No migrations to revert".to_string()))?;
 
-    let local = get_migrations_from_dir().await?;
+    let local = get_migrations_from_dir(source).await?;
     let migration = local
         .into_iter()
         .find(|m| m.version == last.version)
