@@ -29,15 +29,21 @@ Connection details are read from environment variables (a `.env` file in the wor
 - `CLICKHOUSE_USER` (optional) — applied if set.
 - `CLICKHOUSE_PASSWORD` (optional) — applied if set.
 
-Migrations live in `ch_migrations/` under the current working directory.
+## Migrations directory
+
+Migrations live in the directory given by `-s`/`--source` (default `ch_migrations/`), resolved relative to the current working directory. The flag is global and applies to every `migration` subcommand.
 
 ## Usage
 
 ### General Structure
 
 ```sh
-chm <command> [subcommand] [flags]
+chm [--source <DIR>] <command> [subcommand] [flags]
 ```
+
+### Global flags
+
+- `-s, --source <DIR>` — directory containing migrations (default `ch_migrations`). Global; applies to all `migration` subcommands.
 
 ### Commands and Subcommands
 
@@ -101,6 +107,12 @@ chm migration revert
 
    ```sh
    chm migration revert
+   ```
+
+5. **Run Migrations from a Custom Directory**
+
+   ```sh
+   chm migration run --source migrations/clickhouse
    ```
 
 ## Contributing
